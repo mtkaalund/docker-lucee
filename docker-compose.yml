@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  lucee:
+     container_name: lucee
+     image: lucee/lucee5-nginx:latest
+     network_mode: bridge
+     ports:
+             - 80:80
+             - 8888:8888
+             - 443:443
+     volumes:
+             #              - ${ROOT}/tomcat-cfg:/usr/local/tomcat/conf
+             #              - ${ROOT}/supervisor-cfg:/etc/supervisor
+             #              - ${ROOT}/nginx-cfg:/etc/nginx
+             - ${ROOT}/logs:/usr/local/tomcat/logs
+             - ${ROOT}/logs:/opt/lucee/web/logs
+             - ${ROOT}/logs:/var/log
+             - ${ROOT}/lucee-cfg:/opt/lucee/web
+             - ${ROOT}/context:/opt/lucee/server/lucee-server/context
+             - ${ROOT}/www:/var/www
