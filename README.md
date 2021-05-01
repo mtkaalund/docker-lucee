@@ -48,3 +48,48 @@ Next this configuration has expose ports 80, 8888 and 443 these can be change an
             - docker_port:computer_port
 ```
 
+Under the section `volumes` these are the mapping paths from your harddrive to your docker image.
+
+```
+        volumes:
+            - <path on your computer>:<docker path>
+```
+
+So the default configuration uses an `.env` file to create the variable `ROOT` as your base path.
+As a default I have commented out the mapping of **tomcat**, **supervisor** and **nginx**, if you
+have a configuration from then just uncomment and make sure the path exist in `ROOT`.
+
+As a default I have also mapped the log paths, so if anything goes wrong they will be persistent and assist in debugging.
+
+I have made a bash script that will auto create the paths, but if you can create them manual:
+
+```
+source .env
+mkdir -pv ${ROOT}/logs/{supervisor,nginx}
+mkdir -pv ${ROOT}/{lucee-cfg, www, context}
+```
+
+or just by `./Setup_base_path.sh`
+
+Contents of `Setup_base_path.sh`:
+```
+#!/bin/bash
+
+# Loading in our environment file
+. .env
+
+CFG_PATHS="/tomcat-cfg /supervisor-cfg /nginx-cfg /lucee-cfg /context /www /logs/supervisor /logs/nginx"
+
+echo "Root path is '${ROOT}'"
+
+echo "Creating paths need for docker image"
+echo "\tConfigurations paths"
+for cfg in ${CFG_PATHS[@]}; do
+	if [ ! -d ${cfg} ]; then
+		mkdir -pv ${ROOT}${cfg}
+	fi
+done
+
+```
+
+When all the configuration is done then just run `docker-compose up -d` in the path where `docker-compose.yml` is.
